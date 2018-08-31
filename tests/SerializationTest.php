@@ -1,12 +1,21 @@
 <?php
 
-namespace Bolt\Common\Tests;
+/*
+ * This file is part of a Camelot Project package.
+ *
+ * (c) The Camelot Project
+ *
+ * For the full copyright and license information, please view the LICENSE file
+ * that was distributed with this source code.
+ */
 
-use Bolt\Common\Exception\DumpException;
-use Bolt\Common\Serialization;
+namespace Camelot\Common\Tests;
+
+use Camelot\Common\Exception\DumpException;
+use Camelot\Common\Serialization;
 
 /**
- * @covers \Bolt\Common\Serialization
+ * @covers \Camelot\Common\Serialization
  *
  * @author Gawain Lynch <gawain.lynch@gmail.com>
  */
@@ -20,10 +29,10 @@ class SerializationTest extends TestCase
 
     public function testDumpInvalid()
     {
-        if (!defined('HHVM_VERSION')) {
+        if (!\defined('HHVM_VERSION')) {
             $message = "/Error serializing value\. Serialization of 'Closure' is not allowed/";
         } else {
-            $message = '/Error serializing value\. Attempted to serialize unserializable builtin class Closure\$Bolt\\\\Common\\\\Tests\\\\SerializationTest::testDumpInvalid;\d+/';
+            $message = '/Error serializing value\. Attempted to serialize unserializable builtin class Closure\$Camelot\\\\Common\\\\Tests\\\\SerializationTest::testDumpInvalid;\d+/';
         }
         $this->expectException(DumpException::class);
         $this->expectExceptionMessageRegExp($message);
@@ -38,7 +47,7 @@ class SerializationTest extends TestCase
     }
 
     /**
-     * @expectedException \Bolt\Common\Exception\ParseException
+     * @expectedException \Camelot\Common\Exception\ParseException
      * @expectedExceptionMessage Error parsing serialized value.
      */
     public function testParseInvalidData()
@@ -47,12 +56,12 @@ class SerializationTest extends TestCase
     }
 
     /**
-     * @expectedException \Bolt\Common\Exception\ParseException
+     * @expectedException \Camelot\Common\Exception\ParseException
      * @expectedExceptionMessage Error parsing serialized value. Could not find class: ThisClassShouldNotExistsDueToDropBears
      */
     public function testParseClassNotFound()
     {
-        if (defined('HHVM_VERSION')) {
+        if (\defined('HHVM_VERSION')) {
             $this->markTestSkipped(
                 'HHVM has not implemented "unserialize_callback_func", meaning ' .
                 '__PHP_Incomplete_Class could be returned at any level and we are not going to look for them.'

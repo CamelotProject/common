@@ -1,9 +1,18 @@
 <?php
 
-namespace Bolt\Common;
+/*
+ * This file is part of a Camelot Project package.
+ *
+ * (c) The Camelot Project
+ *
+ * For the full copyright and license information, please view the LICENSE file
+ * that was distributed with this source code.
+ */
 
-use Bolt\Common\Exception\DumpException;
-use Bolt\Common\Exception\ParseException;
+namespace Camelot\Common;
+
+use Camelot\Common\Exception\DumpException;
+use Camelot\Common\Exception\ParseException;
 use Seld\JsonLint\JsonParser;
 use Seld\JsonLint\ParsingException;
 
@@ -56,7 +65,7 @@ final class Json
         if ($json !== false) {
             // Match PHP 7.1 functionality
             // Escape line terminators with JSON_UNESCAPED_UNICODE unless JSON_UNESCAPED_LINE_TERMINATORS is given
-            if (PHP_VERSION_ID < 70100 && $options & JSON_UNESCAPED_UNICODE && ($options & 2048) === 0) {
+            if (\PHP_VERSION_ID < 70100 && $options & JSON_UNESCAPED_UNICODE && ($options & 2048) === 0) {
                 $json = str_replace("\xe2\x80\xa8", '\\u2028', $json);
                 $json = str_replace("\xe2\x80\xa9", '\\u2029', $json);
             }
@@ -112,7 +121,7 @@ final class Json
      */
     public static function test($json)
     {
-        if (!is_string($json) && !is_callable([$json, '__toString'])) {
+        if (!\is_string($json) && !\is_callable([$json, '__toString'])) {
             return false;
         }
 
@@ -155,12 +164,12 @@ final class Json
         } elseif ($data instanceof \stdClass) {
             $data = (array) $data;
         }
-        if (is_array($data)) {
+        if (\is_array($data)) {
             array_walk_recursive($data, [static::class, 'detectAndCleanUtf8']);
 
             return;
         }
-        if (!is_string($data) || preg_match('//u', $data)) {
+        if (!\is_string($data) || preg_match('//u', $data)) {
             return;
         }
         $data = preg_replace_callback(

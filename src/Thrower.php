@@ -1,6 +1,15 @@
 <?php
 
-namespace Bolt\Common;
+/*
+ * This file is part of a Camelot Project package.
+ *
+ * (c) The Camelot Project
+ *
+ * For the full copyright and license information, please view the LICENSE file
+ * that was distributed with this source code.
+ */
+
+namespace Camelot\Common;
 
 /**
  * Temporarily set PHP error reporting to throw ErrorExceptions.
@@ -28,7 +37,7 @@ class Thrower
     {
         static::set();
         try {
-            return call_user_func_array($callable, array_slice(func_get_args(), 1));
+            return \call_user_func_array($callable, \array_slice(\func_get_args(), 1));
         } finally {
             restore_error_handler();
         }

@@ -1,8 +1,9 @@
-# Bolt Common
+Camelot Common
+==============
 
 This library provides utility functions to help simplify menial tasks.
 
-The Bolt team believes the PHP error reporting system is a mistake. Many
+The Camelot team believes the PHP error reporting system is a mistake. Many
 built-in functions utilize it, leading to inconsistent results and head
 scratching.
 

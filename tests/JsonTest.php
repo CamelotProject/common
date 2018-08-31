@@ -1,13 +1,22 @@
 <?php
 
-namespace Bolt\Common\Tests;
+/*
+ * This file is part of a Camelot Project package.
+ *
+ * (c) The Camelot Project
+ *
+ * For the full copyright and license information, please view the LICENSE file
+ * that was distributed with this source code.
+ */
 
-use Bolt\Common\Exception\DumpException;
-use Bolt\Common\Exception\ParseException;
-use Bolt\Common\Json;
-use Bolt\Common\Tests\Fixtures\JsonMocker;
-use Bolt\Common\Tests\Fixtures\TestJsonable;
-use Bolt\Common\Tests\Fixtures\TestStringable;
+namespace Camelot\Common\Tests;
+
+use Camelot\Common\Exception\DumpException;
+use Camelot\Common\Exception\ParseException;
+use Camelot\Common\Json;
+use Camelot\Common\Tests\Fixtures\JsonMocker;
+use Camelot\Common\Tests\Fixtures\TestJsonable;
+use Camelot\Common\Tests\Fixtures\TestStringable;
 
 class JsonTest extends TestCase
 {
@@ -138,7 +147,7 @@ class JsonTest extends TestCase
     }
 
     /**
-     * @expectedException \Bolt\Common\Exception\ParseException
+     * @expectedException \Camelot\Common\Exception\ParseException
      * @expectedExceptionMessage JSON parsing failed: Maximum stack depth exceeded
      */
     public function testParseErrorDepth()
@@ -188,7 +197,7 @@ class JsonTest extends TestCase
 
     public function testDumpUnicode()
     {
-        if (!function_exists('mb_convert_encoding')) {
+        if (!\function_exists('mb_convert_encoding')) {
             $this->markTestSkipped('Test requires the mbstring extension');
         }
 
@@ -201,7 +210,7 @@ class JsonTest extends TestCase
 
     public function testDumpOnlyUnicode()
     {
-        if (!function_exists('mb_convert_encoding')) {
+        if (!\function_exists('mb_convert_encoding')) {
             $this->markTestSkipped('Test requires the mbstring extension');
         }
 
@@ -232,7 +241,7 @@ class JsonTest extends TestCase
         $this->assertJsonFormat('"JS\\u2029ON ro\\u2028cks"', 'JS ON ro cks', JSON_UNESCAPED_UNICODE);
         $this->assertJsonFormat('"JS\\u2029ON ro\\u2028cks"', 'JS ON ro cks', JSON_UNESCAPED_UNICODE);
 
-        if (PHP_VERSION_ID >= 70100) {
+        if (\PHP_VERSION_ID >= 70100) {
             $this->assertJsonFormat('"JS ON ro cks"', 'JS ON ro cks', JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_LINE_TERMINATORS);
         }
     }

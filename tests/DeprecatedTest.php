@@ -1,9 +1,18 @@
 <?php
 
-namespace Bolt\Common\Tests;
+/*
+ * This file is part of a Camelot Project package.
+ *
+ * (c) The Camelot Project
+ *
+ * For the full copyright and license information, please view the LICENSE file
+ * that was distributed with this source code.
+ */
 
-use Bolt\Common\Deprecated;
-use Bolt\Common\Tests\Fixtures\TestDeprecatedClass;
+namespace Camelot\Common\Tests;
+
+use Camelot\Common\Deprecated;
+use Camelot\Common\Tests\Fixtures\TestDeprecatedClass;
 
 /**
  * @author Carson Full <carsonfull@gmail.com>
@@ -63,8 +72,8 @@ class DeprecatedTest extends TestCase
 
     public function testMethodFunction()
     {
-        eval('namespace Bolt\Common { function deprecatedFunction() { Deprecated::method(); }; deprecatedFunction(); }');
-        $this->assertDeprecation('Bolt\Common\deprecatedFunction() is deprecated.');
+        eval('namespace Camelot\Common { function deprecatedFunction() { Deprecated::method(); }; deprecatedFunction(); }');
+        $this->assertDeprecation('Camelot\Common\deprecatedFunction() is deprecated.');
     }
 
     public function testMethodIndex()
@@ -111,12 +120,12 @@ class DeprecatedTest extends TestCase
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Bolt\Common\Deprecated::method() must be called from within a function/method.
+     * @expectedExceptionMessage Camelot\Common\Deprecated::method() must be called from within a function/method.
      */
     public function testMethodNotFunction()
     {
         // Using eval here because it is the easiest, but this also applies to require(_once)/include(_once)
-        eval('\Bolt\Common\Deprecated::method();');
+        eval('\Camelot\Common\Deprecated::method();');
     }
 
     public function testClass()

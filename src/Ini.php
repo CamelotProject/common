@@ -1,6 +1,15 @@
 <?php
 
-namespace Bolt\Common;
+/*
+ * This file is part of a Camelot Project package.
+ *
+ * (c) The Camelot Project
+ *
+ * For the full copyright and license information, please view the LICENSE file
+ * that was distributed with this source code.
+ */
+
+namespace Camelot\Common;
 
 /**
  * Wrapper around ini_get()/ini_set().

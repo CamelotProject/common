@@ -1,8 +1,17 @@
 <?php
 
-namespace Bolt\Common\Tests;
+/*
+ * This file is part of a Camelot Project package.
+ *
+ * (c) The Camelot Project
+ *
+ * For the full copyright and license information, please view the LICENSE file
+ * that was distributed with this source code.
+ */
 
-use Bolt\Common\Assert;
+namespace Camelot\Common\Tests;
+
+use Camelot\Common\Assert;
 
 class AssertTest extends TestCase
 {

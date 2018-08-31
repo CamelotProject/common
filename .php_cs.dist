@@ -1,6 +1,22 @@
 <?php
 
-return Bolt\CsFixer\Config::create()
-    ->addRules(Bolt\CsFixer\Rules::create()->risky())
-    ->in('.')
+return Camelot\CsFixer\Config::create()
+    ->addRules(
+        Camelot\CsFixer\Rules::create()
+            ->risky()
+    )
+    ->addRules([
+        'header_comment' => [
+            'header' => <<<'EOD'
+This file is part of a Camelot Project package.
+
+(c) The Camelot Project
+
+For the full copyright and license information, please view the LICENSE file
+that was distributed with this source code.
+EOD
+        ],
+    ])
+    ->in('src')
+    ->in('tests')
 ;

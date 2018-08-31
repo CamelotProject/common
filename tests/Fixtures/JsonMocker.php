@@ -1,8 +1,17 @@
 <?php
 
-namespace Bolt\Common\Tests\Fixtures;
+/*
+ * This file is part of a Camelot Project package.
+ *
+ * (c) The Camelot Project
+ *
+ * For the full copyright and license information, please view the LICENSE file
+ * that was distributed with this source code.
+ */
 
-use Bolt\Common\Json;
+namespace Camelot\Common\Tests\Fixtures;
+
+use Camelot\Common\Json;
 
 // @codingStandardsIgnoreFile
 
@@ -41,7 +50,7 @@ class JsonMocker
     }
 
     /**
-     * Register override functions for Bolt\Common namespace.
+     * Register override functions for Camelot\Common namespace.
      *
      * We use eval() here so we can loop over methods to reduce boilerplate and so that our IDEs
      * don't pick up these methods and try to auto complete to them instead of the native methods.
@@ -53,7 +62,7 @@ class JsonMocker
         }
 
         $code = <<<'PHP'
-namespace Bolt\Common;
+namespace Camelot\Common;
 
 function %s() { return call_user_func_array([\%s::instance(), '%1$s'], func_get_args()); }
 PHP;
@@ -105,22 +114,22 @@ PHP;
 
     public function json_decode($value, $options = 0, $depth = 512)
     {
-        return call_user_func_array($this->decoder, func_get_args());
+        return \call_user_func_array($this->decoder, \func_get_args());
     }
 
     public function json_encode($json, $assoc = false, $depth = 512, $options = 0)
     {
-        return call_user_func_array($this->encoder, func_get_args());
+        return \call_user_func_array($this->encoder, \func_get_args());
     }
 
     public function json_last_error()
     {
-        return call_user_func($this->lastCodeGetter);
+        return \call_user_func($this->lastCodeGetter);
     }
 
     public function json_last_error_msg()
     {
-        return call_user_func($this->lastMsgGetter);
+        return \call_user_func($this->lastMsgGetter);
     }
 }
 

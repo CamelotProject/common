@@ -1,6 +1,15 @@
 <?php
 
-namespace Bolt\Common;
+/*
+ * This file is part of a Camelot Project package.
+ *
+ * (c) The Camelot Project
+ *
+ * For the full copyright and license information, please view the LICENSE file
+ * that was distributed with this source code.
+ */
+
+namespace Camelot\Common;
 
 class Str
 {
@@ -21,7 +30,7 @@ class Str
             return $subject;
         }
 
-        return substr_replace($subject, $replace, $pos, strlen($search));
+        return substr_replace($subject, $replace, $pos, \strlen($search));
     }
 
     /**
@@ -41,7 +50,7 @@ class Str
             return $subject;
         }
 
-        return substr_replace($subject, $replace, $pos, strlen($search));
+        return substr_replace($subject, $replace, $pos, \strlen($search));
     }
 
     /**
@@ -128,7 +137,7 @@ class Str
             $search = strtolower($search);
         }
 
-        return $search === '' || substr($subject, -strlen($search)) === $search;
+        return $search === '' || substr($subject, -\strlen($search)) === $search;
     }
 
     /**
@@ -140,8 +149,8 @@ class Str
      */
     public static function className($class)
     {
-        if (is_object($class)) {
-            $class = get_class($class);
+        if (\is_object($class)) {
+            $class = \get_class($class);
         }
 
         return static::splitLast($class, '\\');

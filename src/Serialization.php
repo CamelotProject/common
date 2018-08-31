@@ -1,9 +1,18 @@
 <?php
 
-namespace Bolt\Common;
+/*
+ * This file is part of a Camelot Project package.
+ *
+ * (c) The Camelot Project
+ *
+ * For the full copyright and license information, please view the LICENSE file
+ * that was distributed with this source code.
+ */
 
-use Bolt\Common\Exception\DumpException;
-use Bolt\Common\Exception\ParseException;
+namespace Camelot\Common;
+
+use Camelot\Common\Exception\DumpException;
+use Camelot\Common\Exception\ParseException;
 
 /**
  * Wrapper around serialize()/unserialize().
@@ -46,7 +55,7 @@ class Serialization
     {
         $unserializeHandler = ini_set('unserialize_callback_func', __CLASS__ . '::handleUnserializeCallback');
         try {
-            if (PHP_VERSION_ID < 70000) {
+            if (\PHP_VERSION_ID < 70000) {
                 return Thrower::call('unserialize', $value);
             }
 

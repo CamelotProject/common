@@ -5,7 +5,7 @@
     <file>src</file>
     <file>tests</file>
 
-    <rule ref="vendor/bolt/codingstyle/Bolt">
+    <rule ref="vendor/camelot/codingstyle/Camelot">
         <!-- Ignore silencing here, since we are wrapping built in methods that do stupid things -->
         <exclude name="Generic.PHP.NoSilencedErrors"/>
     </rule>
