@@ -112,12 +112,12 @@ PHP;
 
     // @codingStandardsIgnoreStart
 
-    public function json_decode($value, $options = 0, $depth = 512)
+    public function json_decode(string $value, bool $assoc = false, int $options = 0, int $depth = 512)
     {
         return \call_user_func_array($this->decoder, \func_get_args());
     }
 
-    public function json_encode($json, $assoc = false, $depth = 512, $options = 0)
+    public function json_encode($json, $depth = 512, $options = 0)
     {
         return \call_user_func_array($this->encoder, \func_get_args());
     }
