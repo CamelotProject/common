@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of a Camelot Project package.
  *
@@ -24,13 +26,10 @@ class Serialization
     /**
      * Dump (Serialize) value.
      *
-     * @param mixed $value
      *
      * @throws DumpException when serializing fails
-     *
-     * @return string
      */
-    public static function dump($value)
+    public static function dump($value): string
     {
         try {
             return serialize($value);
@@ -44,14 +43,9 @@ class Serialization
     /**
      * Parse (Unserialize) value.
      *
-     * @param string $value
-     * @param array  $options
-     *
      * @throws ParseException when unserializing fails
-     *
-     * @return mixed
      */
-    public static function parse($value, $options = [])
+    public static function parse(string $value, array $options = [])
     {
         $unserializeHandler = ini_set('unserialize_callback_func', __CLASS__ . '::handleUnserializeCallback');
         try {
@@ -73,10 +67,8 @@ class Serialization
 
     /**
      * @internal
-     *
-     * @param string $class
      */
-    public static function handleUnserializeCallback($class)
+    public static function handleUnserializeCallback(string $class): void
     {
         throw new ParseException(sprintf('Error parsing serialized value. Could not find class: %s', $class));
     }

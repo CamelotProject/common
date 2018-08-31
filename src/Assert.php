@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of a Camelot Project package.
  *
@@ -21,7 +23,7 @@ namespace Camelot\Common;
  */
 class Assert extends \Webmozart\Assert\Assert
 {
-    public static function isArrayAccessible($value, $message = '')
+    public static function isArrayAccessible($value, $message = ''): void
     {
         if (!\is_array($value) && !($value instanceof \ArrayAccess)) {
             static::reportInvalidArgument(sprintf(
@@ -31,7 +33,7 @@ class Assert extends \Webmozart\Assert\Assert
         }
     }
 
-    public static function isInstanceOfAny($value, array $classes, $message = '')
+    public static function isInstanceOfAny($value, array $classes, $message = ''): void
     {
         foreach ($classes as $class) {
             if ($value instanceof $class) {
@@ -46,7 +48,7 @@ class Assert extends \Webmozart\Assert\Assert
         ));
     }
 
-    public static function isIterable($value, $message = '')
+    public static function isIterable($value, $message = ''): void
     {
         if (!is_iterable($value)) {
             static::reportInvalidArgument(sprintf(
@@ -62,12 +64,8 @@ class Assert extends \Webmozart\Assert\Assert
      * This returns the class name of objects instead of `object`.
      * This returns quoted string values instead of `string`.
      * This returns `false` or `true` instead of `boolean`.
-     *
-     * @param mixed $value
-     *
-     * @return string
      */
-    public static function valueToString($value)
+    public static function valueToString($value): string
     {
         return parent::valueToString($value);
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of a Camelot Project package.
  *
@@ -10,6 +12,8 @@
  */
 
 namespace Camelot\Common;
+
+use function call_user_func_array;
 
 /**
  * Temporarily set PHP error reporting to throw ErrorExceptions.
@@ -26,18 +30,13 @@ class Thrower
     /**
      * Call the given callable with given args, but throws an ErrorException when an error/warning/notice is triggered.
      *
-     * @param callable $callable
-     * @param array    ...$args
-     *
      * @throws \ErrorException when an error/warning/notice is triggered
-     *
-     * @return mixed
      */
-    public static function call(callable $callable)
+    public static function call(callable $callable, ...$args)
     {
         static::set();
         try {
-            return \call_user_func_array($callable, \array_slice(\func_get_args(), 1));
+            return call_user_func_array($callable, $args);
         } finally {
             restore_error_handler();
         }
@@ -50,10 +49,10 @@ class Thrower
      *
      * @return callable|null the previous handler
      */
-    public static function set()
+    public static function set(): ?callable
     {
         if (!static::$handler) {
-            static::$handler = function ($severity, $message, $file, $line) {
+            static::$handler = function ($severity, $message, $file, $line): void {
                 throw new \ErrorException($message, 0, $severity, $file, $line);
             };
         }

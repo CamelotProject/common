@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of a Camelot Project package.
  *
@@ -13,6 +15,7 @@ namespace Camelot\Common\Tests;
 
 use Camelot\Common\Exception\DumpException;
 use Camelot\Common\Serialization;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \Camelot\Common\Serialization
@@ -21,13 +24,13 @@ use Camelot\Common\Serialization;
  */
 class SerializationTest extends TestCase
 {
-    public function testDump()
+    public function testDump(): void
     {
         $result = Serialization::dump(new \stdClass());
         $this->assertSame(serialize(new \stdClass()), $result);
     }
 
-    public function testDumpInvalid()
+    public function testDumpInvalid(): void
     {
         if (!\defined('HHVM_VERSION')) {
             $message = "/Error serializing value\. Serialization of 'Closure' is not allowed/";
@@ -37,30 +40,28 @@ class SerializationTest extends TestCase
         $this->expectException(DumpException::class);
         $this->expectExceptionMessageRegExp($message);
 
-        Serialization::dump(function () {});
+        Serialization::dump(function (): void {});
     }
 
-    public function testParseSimple()
+    public function testParseSimple(): void
     {
         $result = Serialization::parse(serialize(new \stdClass()));
         $this->assertInstanceOf(\stdClass::class, $result);
     }
 
-    /**
-     * @expectedException \Camelot\Common\Exception\ParseException
-     * @expectedExceptionMessage Error parsing serialized value.
-     */
-    public function testParseInvalidData()
+    public function testParseInvalidData(): void
     {
+        $this->expectException(\Camelot\Common\Exception\ParseException::class);
+        $this->expectExceptionMessage('Error parsing serialized value.');
+
         Serialization::parse('O:9:"stdClass":0:{}');
     }
 
-    /**
-     * @expectedException \Camelot\Common\Exception\ParseException
-     * @expectedExceptionMessage Error parsing serialized value. Could not find class: ThisClassShouldNotExistsDueToDropBears
-     */
-    public function testParseClassNotFound()
+    public function testParseClassNotFound(): void
     {
+        $this->expectException(\Camelot\Common\Exception\ParseException::class);
+        $this->expectExceptionMessage('Error parsing serialized value. Could not find class: ThisClassShouldNotExistsDueToDropBears');
+
         if (\defined('HHVM_VERSION')) {
             $this->markTestSkipped(
                 'HHVM has not implemented "unserialize_callback_func", meaning ' .

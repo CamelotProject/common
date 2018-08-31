@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of a Camelot Project package.
  *
@@ -15,15 +17,8 @@ class Str
 {
     /**
      * Replaces the first occurrence of the $search text on the $subject.
-     *
-     * @param string $subject
-     * @param string $search
-     * @param string $replace
-     * @param bool   $caseSensitive
-     *
-     * @return string
      */
-    public static function replaceFirst($subject, $search, $replace, $caseSensitive = true)
+    public static function replaceFirst(string $subject, string $search, string $replace, bool $caseSensitive = true): string
     {
         $pos = $caseSensitive ? strpos($subject, $search) : stripos($subject, $search);
         if ($pos === false) {
@@ -35,15 +30,8 @@ class Str
 
     /**
      * Replaces the last occurrence of the $search text on the $subject.
-     *
-     * @param string $subject
-     * @param string $search
-     * @param string $replace
-     * @param bool   $caseSensitive
-     *
-     * @return string
      */
-    public static function replaceLast($subject, $search, $replace, $caseSensitive = true)
+    public static function replaceLast(string $subject, string $search, string $replace, bool $caseSensitive = true): string
     {
         $pos = $caseSensitive ? strrpos($subject, $search) : strripos($subject, $search);
         if ($pos === false) {
@@ -55,28 +43,16 @@ class Str
 
     /**
      * Removes the first occurrence of the $search text on the $subject.
-     *
-     * @param string $subject
-     * @param string $search
-     * @param bool   $caseSensitive
-     *
-     * @return string
      */
-    public static function removeFirst($subject, $search, $caseSensitive = true)
+    public static function removeFirst(string $subject, string $search, bool $caseSensitive = true): string
     {
         return static::replaceFirst($subject, $search, '', $caseSensitive);
     }
 
     /**
      * Removes the last occurrence of the $search text on the $subject.
-     *
-     * @param string $subject
-     * @param string $search
-     * @param bool   $caseSensitive
-     *
-     * @return string
      */
-    public static function removeLast($subject, $search, $caseSensitive = true)
+    public static function removeLast(string $subject, string $search, bool $caseSensitive = true): string
     {
         return static::replaceLast($subject, $search, '', $caseSensitive);
     }
@@ -89,10 +65,8 @@ class Str
      * @param string $delimiter The term to split on
      *
      * @throws \InvalidArgumentException
-     *
-     * @return string
      */
-    public static function splitFirst($subject, $delimiter)
+    public static function splitFirst(string $subject, string $delimiter): string
     {
         Assert::notEmpty($delimiter);
 
@@ -109,10 +83,8 @@ class Str
      * @param string $delimiter The term to split on
      *
      * @throws \InvalidArgumentException
-     *
-     * @return string
      */
-    public static function splitLast($subject, $delimiter)
+    public static function splitLast(string $subject, string $delimiter): string
     {
         Assert::notEmpty($delimiter);
 
@@ -123,14 +95,8 @@ class Str
 
     /**
      * Returns whether the subjects ends with the search string.
-     *
-     * @param string $subject
-     * @param string $search
-     * @param bool   $caseSensitive
-     *
-     * @return bool
      */
-    public static function endsWith($subject, $search, $caseSensitive = true)
+    public static function endsWith(string $subject, string $search, bool $caseSensitive = true): bool
     {
         if (!$caseSensitive) {
             $subject = strtolower($subject);
@@ -144,10 +110,8 @@ class Str
      * Returns the class name without the namespace.
      *
      * @param string|object $class object or fully qualified class name
-     *
-     * @return string
      */
-    public static function className($class)
+    public static function className($class): string
     {
         if (\is_object($class)) {
             $class = \get_class($class);
@@ -167,7 +131,7 @@ class Str
      *
      * @return string The humanized text
      */
-    public static function humanize($text)
+    public static function humanize(string $text): string
     {
         return ucfirst(trim(strtolower(preg_replace(['/([A-Z])/', '/[_\s]+/'], ['_$1', ' '], $text))));
     }
@@ -180,7 +144,7 @@ class Str
      *
      * @return string The camel cased text
      */
-    public static function camelCase($text, $lowercaseFirstChar = false)
+    public static function camelCase(string $text, bool $lowercaseFirstChar = false): string
     {
         $text = strtr(ucwords(strtr($text, ['_' => ' ', '.' => '_ ', '\\' => '_ '])), [' ' => '']);
         if ($lowercaseFirstChar) {
@@ -197,7 +161,7 @@ class Str
      *
      * @return string The snake cased text
      */
-    public static function snakeCase($text)
+    public static function snakeCase(string $text): string
     {
         return strtolower(
             preg_replace(['/([A-Z]+)([A-Z][a-z])/', '/([a-z\d])([A-Z])/'], ['\\1_\\2', '\\1_\\2'], $text)

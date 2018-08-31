@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of a Camelot Project package.
  *
@@ -12,6 +14,7 @@
 namespace Camelot\Common\Exception;
 
 use Seld\JsonLint\ParsingException as JsonParseException;
+use Throwable;
 
 class ParseException extends \RuntimeException
 {
@@ -22,16 +25,7 @@ class ParseException extends \RuntimeException
     /** @var string */
     private $rawMessage;
 
-    /**
-     * Constructor.
-     *
-     * @param string      $message    The error message
-     * @param int         $parsedLine The line where the error occurred
-     * @param string|null $snippet    The snippet of code near the problem
-     * @param int         $code       The code
-     * @param \Throwable  $previous   The previous exception
-     */
-    public function __construct($message, $parsedLine = -1, $snippet = null, $code = 0, $previous = null)
+    public function __construct(string $message, int $parsedLine = -1, ?string $snippet = null, int $code = 0, Throwable $previous = null)
     {
         $this->parsedLine = $parsedLine;
         $this->snippet = $snippet;
@@ -44,16 +38,12 @@ class ParseException extends \RuntimeException
 
     /**
      * Casts JsonLint ParseException to ours.
-     *
-     * @param JsonParseException $exception
-     *
-     * @return ParseException
      */
-    public static function castFromJson(JsonParseException $exception)
+    public static function castFromJson(JsonParseException $exception): self
     {
         $details = $exception->getDetails();
         $message = $exception->getMessage();
-        $line = isset($details['line']) ? $details['line'] : -1;
+        $line = $details['line'] ?? -1;
         $snippet = null;
 
         if (preg_match("/^Parse error on line (\\d+):\n(.+)\n.+\n(.+)$/", $message, $matches)) {
@@ -80,10 +70,8 @@ class ParseException extends \RuntimeException
 
     /**
      * Gets the message without line number and snippet.
-     *
-     * @return string
      */
-    public function getRawMessage()
+    public function getRawMessage(): string
     {
         return $this->rawMessage;
     }
@@ -92,10 +80,8 @@ class ParseException extends \RuntimeException
      * Sets the message.
      *
      * Don't include line number and snippet in this as they will be merged separately.
-     *
-     * @param string $rawMessage
      */
-    public function setRawMessage($rawMessage)
+    public function setRawMessage(string $rawMessage): void
     {
         $this->rawMessage = $rawMessage;
 
@@ -104,20 +90,16 @@ class ParseException extends \RuntimeException
 
     /**
      * Gets the line where the error occurred.
-     *
-     * @return int The file line
      */
-    public function getParsedLine()
+    public function getParsedLine(): int
     {
         return $this->parsedLine;
     }
 
     /**
      * Sets the line where the error occurred.
-     *
-     * @param int $parsedLine The file line
      */
-    public function setParsedLine($parsedLine)
+    public function setParsedLine(int $parsedLine): void
     {
         $this->parsedLine = $parsedLine;
 
@@ -126,20 +108,16 @@ class ParseException extends \RuntimeException
 
     /**
      * Gets the snippet of code near the error.
-     *
-     * @return string The snippet of code
      */
-    public function getSnippet()
+    public function getSnippet(): string
     {
         return $this->snippet;
     }
 
     /**
      * Sets the snippet of code near the error.
-     *
-     * @param string $snippet The code snippet
      */
-    public function setSnippet($snippet)
+    public function setSnippet(string $snippet): void
     {
         $this->snippet = $snippet;
 
@@ -149,7 +127,7 @@ class ParseException extends \RuntimeException
     /**
      * Sets the exception message by joining the raw message, parsed line, and snippet.
      */
-    private function updateRepr()
+    private function updateRepr(): void
     {
         $this->message = $this->rawMessage;
 

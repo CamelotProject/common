@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of a Camelot Project package.
  *
@@ -23,12 +25,8 @@ class Ini
 
     /**
      * Checks whether the given key exists.
-     *
-     * @param string $key
-     *
-     * @return bool
      */
-    public static function has($key)
+    public static function has(string $key): bool
     {
         if (static::$keys === null) {
             static::readKeys();
@@ -39,13 +37,8 @@ class Ini
 
     /**
      * Returns the string value of the given key or the given default if it is empty or does not exist.
-     *
-     * @param string      $key
-     * @param string|null $default
-     *
-     * @return string|null
      */
-    public static function getStr($key, $default = null)
+    public static function getStr(string $key, ?string $default = null): ?string
     {
         $value = ini_get($key);
 
@@ -56,12 +49,8 @@ class Ini
      * Returns the value of the given key filtered to a boolean.
      *
      * If the key does not exist false is returned.
-     *
-     * @param string $key
-     *
-     * @return bool
      */
-    public static function getBool($key)
+    public static function getBool(string $key): bool
     {
         return filter_var(ini_get($key), FILTER_VALIDATE_BOOLEAN);
     }
@@ -71,12 +60,11 @@ class Ini
      *
      * If the key does not exist or the value is empty the given default is returned.
      *
-     * @param string         $key
      * @param int|float|null $default
      *
      * @return int|float|null
      */
-    public static function getNumeric($key, $default = null)
+    public static function getNumeric(string $key, $default = null)
     {
         $value = ini_get($key);
 
@@ -87,13 +75,8 @@ class Ini
      * Parses a bytes string representation value of the given key and returns it as an int.
      *
      * Note that floats are converted to ints before being multiplied by their unit. Thus 5.5M == 5M and 0.5M == 0.
-     *
-     * @param string   $key
-     * @param int|null $default
-     *
-     * @return int|null
      */
-    public static function getBytes($key, $default = null)
+    public static function getBytes(string $key, ?int $default = null): ?int
     {
         $value = ini_get($key);
 
@@ -108,19 +91,17 @@ class Ini
         $unit = preg_replace('/[^bkmgtpezy]/i', '', $value);
         $size = preg_replace('/[^0-9\.]/', '', $value);
 
-        return ((int) $size) * ($unit ? pow(1024, stripos('bkmgtpezy', $unit[0])) : 1);
+        return ((int) $size) * ($unit ? 1024 ** stripos('bkmgtpezy', $unit[0]) : 1);
     }
 
     /**
      * Set a new value for the given key.
      *
-     * @param string $key
-     * @param mixed  $value
      *
      * @throws \InvalidArgumentException when the value is not scalar or null
      * @throws \RuntimeException         when the key does not exist, it is not editable, or some unknown reason
      */
-    public static function set($key, $value)
+    public static function set(string $key, $value): void
     {
         Assert::nullOrScalar($value, 'ini values must be scalar or null. Got: %s');
 
@@ -163,7 +144,7 @@ class Ini
     /**
      * Process all ini options to get list of keys and determine which ones are editable.
      */
-    private static function readKeys()
+    private static function readKeys(): void
     {
         static::$keys = [];
 

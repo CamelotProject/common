@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of a Camelot Project package.
  *
@@ -12,6 +14,9 @@
 namespace Camelot\Common\Tests\Fixtures;
 
 use Camelot\Common\Json;
+use function call_user_func;
+use function call_user_func_array;
+use function func_get_args;
 
 // @codingStandardsIgnoreFile
 
@@ -38,7 +43,7 @@ class JsonMocker
      *
      * @return JsonMocker
      */
-    public static function instance()
+    public static function instance(): self
     {
         static $instance;
         if (!$instance) {
@@ -55,7 +60,7 @@ class JsonMocker
      * We use eval() here so we can loop over methods to reduce boilerplate and so that our IDEs
      * don't pick up these methods and try to auto complete to them instead of the native methods.
      */
-    private static function register()
+    private static function register(): void
     {
         if (class_exists(Json::class, false)) {
             throw new \LogicException(sprintf('%s() must be called before %s is loaded', __METHOD__, Json::class));
@@ -82,7 +87,7 @@ PHP;
         $this->reset();
     }
 
-    public function reset()
+    public function reset(): void
     {
         $this->setEncoder();
         $this->setDecoder();
@@ -90,22 +95,22 @@ PHP;
         $this->setLastMessageGetter();
     }
 
-    public function setEncoder(callable $encoder = null)
+    public function setEncoder(callable $encoder = null): void
     {
         $this->encoder = $encoder ?: 'json_encode';
     }
 
-    public function setDecoder(callable $decoder = null)
+    public function setDecoder(callable $decoder = null): void
     {
         $this->decoder = $decoder ?: 'json_decode';
     }
 
-    public function setLastCodeGetter(callable $callable = null)
+    public function setLastCodeGetter(callable $callable = null): void
     {
         $this->lastCodeGetter = $callable ?: 'json_last_error';
     }
 
-    public function setLastMessageGetter(callable $callable = null)
+    public function setLastMessageGetter(callable $callable = null): void
     {
         $this->lastMsgGetter = $callable ?: 'json_last_error_msg';
     }
@@ -114,22 +119,22 @@ PHP;
 
     public function json_decode(string $value, bool $assoc = false, int $options = 0, int $depth = 512)
     {
-        return \call_user_func_array($this->decoder, \func_get_args());
+        return call_user_func_array($this->decoder, func_get_args());
     }
 
-    public function json_encode($json, $depth = 512, $options = 0)
+    public function json_encode($json, int $depth = 512, int $options = 0)
     {
-        return \call_user_func_array($this->encoder, \func_get_args());
+        return call_user_func_array($this->encoder, func_get_args());
     }
 
     public function json_last_error()
     {
-        return \call_user_func($this->lastCodeGetter);
+        return call_user_func($this->lastCodeGetter);
     }
 
     public function json_last_error_msg()
     {
-        return \call_user_func($this->lastMsgGetter);
+        return call_user_func($this->lastMsgGetter);
     }
 }
 

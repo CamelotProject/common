@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of a Camelot Project package.
  *
@@ -25,19 +27,19 @@ final class Json
      * Dump JSON easy to read for humans.
      * Shortcut for JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE.
      */
-    const HUMAN = 448;
+    public const HUMAN = 448;
 
     /**
      * Dump JSON without escaping slashes or unicode.
      * Shortcut for JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE.
      */
-    const UNESCAPED = 320;
+    public const UNESCAPED = 320;
 
     /**
      * Dump JSON safe for HTML.
      * Shortcut for JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT.
      */
-    const HTML = 15;
+    public const HTML = 15;
 
     /**
      * Dumps a array/object into a JSON string.
@@ -48,10 +50,8 @@ final class Json
      * @param int   $depth   Set the maximum depth. Must be greater than zero.
      *
      * @throws DumpException If dumping fails
-     *
-     * @return string
      */
-    public static function dump($data, $options = self::UNESCAPED, $depth = 512)
+    public static function dump($data, int $options = self::UNESCAPED, int $depth = 512): string
     {
         $json = @json_encode($data, $options, $depth);
 
@@ -79,15 +79,13 @@ final class Json
     /**
      * Parses JSON into a PHP array.
      *
-     * @param string $json    The JSON string
-     * @param int    $options Bitmask of JSON decode options
-     * @param int    $depth   Recursion depth
+     * @param string|null $json    The JSON string or object implementing __toString()
+     * @param int         $options Bitmask of JSON decode options
+     * @param int         $depth   Recursion depth
      *
      * @throws ParseException If the JSON is not valid
-     *
-     * @return array
      */
-    public static function parse($json, $options = 0, $depth = 512)
+    public static function parse($json, int $options = 0, int $depth = 512): ?array
     {
         if ($json === null) {
             return null;
@@ -114,12 +112,8 @@ final class Json
 
     /**
      * Return whether the given string is JSON.
-     *
-     * @param mixed $json
-     *
-     * @return bool
      */
-    public static function test($json)
+    public static function test($json): bool
     {
         if (!\is_string($json) && !\is_callable([$json, '__toString'])) {
             return false;
@@ -155,7 +149,7 @@ final class Json
      *
      * @see https://github.com/Seldaek/monolog/pull/683
      */
-    private static function detectAndCleanUtf8(&$data)
+    private static function detectAndCleanUtf8(&$data): void
     {
         if ($data instanceof \JsonSerializable) {
             $data = $data->jsonSerialize();

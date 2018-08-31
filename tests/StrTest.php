@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of a Camelot Project package.
  *
@@ -12,10 +14,11 @@
 namespace Camelot\Common\Tests;
 
 use Camelot\Common\Str;
+use PHPUnit\Framework\TestCase;
 
 class StrTest extends TestCase
 {
-    public function testReplaceFirst()
+    public function testReplaceFirst(): void
     {
         $this->assertSame(
             'HelloFooHelloGoodbye',
@@ -32,7 +35,7 @@ class StrTest extends TestCase
         );
     }
 
-    public function testReplaceLast()
+    public function testReplaceLast(): void
     {
         $this->assertSame(
             'HelloGoodbyeFooGoodbye',
@@ -49,7 +52,7 @@ class StrTest extends TestCase
         );
     }
 
-    public function testRemoveFirst()
+    public function testRemoveFirst(): void
     {
         $this->assertSame('HelloHelloGoodbye', Str::removeFirst('HelloGoodbyeHelloGoodbye', 'Goodbye'));
         $this->assertSame('HelloHelloGoodbye', Str::removeFirst('HelloGOODBYEHelloGoodbye', 'Goodbye', false));
@@ -57,7 +60,7 @@ class StrTest extends TestCase
         $this->assertSame('abc', Str::removeFirst('abc', 'zxc'));
     }
 
-    public function testRemoveLast()
+    public function testRemoveLast(): void
     {
         $this->assertSame('HelloGoodbyeGoodbye', Str::removeLast('HelloGoodbyeHelloGoodbye', 'Hello'));
         $this->assertSame('HelloGoodbyeGoodbye', Str::removeLast('HelloGoodbyeHELLOGoodbye', 'Hello', false));
@@ -65,48 +68,46 @@ class StrTest extends TestCase
         $this->assertSame('abc', Str::removeLast('abc', 'zxc'));
     }
 
-    public function testSplitFirst()
+    public function testSplitFirst(): void
     {
         $this->assertSame('herp', Str::splitFirst('herp derp foo bar', ' '));
         $this->assertSame('herp derp', Str::splitFirst('herp derp', ','));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testSplitFirstEmptyDelimiter()
+    public function testSplitFirstEmptyDelimiter(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $this->assertFalse(Str::splitFirst('herp derp', ''));
     }
 
-    public function testSplitLast()
+    public function testSplitLast(): void
     {
         $this->assertSame('bar', Str::splitLast('herp derp foo bar', ' '));
         $this->assertSame('herp derp', Str::splitLast('herp derp', ','));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testSplitLastEmptyDelimiter()
+    public function testSplitLastEmptyDelimiter(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $this->assertFalse(Str::splitLast('herp derp', ''));
     }
 
-    public function testEndsWith()
+    public function testEndsWith(): void
     {
         $this->assertTrue(Str::endsWith('FooBar', 'Bar'));
         $this->assertTrue(Str::endsWith('FooBar', 'bar', false));
         $this->assertFalse(Str::endsWith('FooBar', 'Foo'));
     }
 
-    public function testClassName()
+    public function testClassName(): void
     {
         $this->assertSame('StrTest', Str::className($this));
         $this->assertSame('StrTest', Str::className(static::class));
     }
 
-    public function testCamelCase()
+    public function testCamelCase(): void
     {
         $this->assertSame('FooBar', Str::camelCase('fooBar'));
         $this->assertSame('FooBar', Str::camelCase('FooBar'));
@@ -115,14 +116,14 @@ class StrTest extends TestCase
         $this->assertSame('fooBar', Str::camelCase('foo_bar', true));
     }
 
-    public function testHumanize()
+    public function testHumanize(): void
     {
         $this->assertSame('Foo bar', Str::humanize('fooBar'));
         $this->assertSame('Foo bar', Str::humanize('FooBar'));
         $this->assertSame('Foo bar', Str::humanize('foo_bar'));
     }
 
-    public function testSnakeCase()
+    public function testSnakeCase(): void
     {
         $this->assertSame('foo_bar', Str::snakeCase('fooBar'));
         $this->assertSame('foo_bar', Str::snakeCase('FooBar'));

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of a Camelot Project package.
  *
@@ -12,10 +14,11 @@
 namespace Camelot\Common\Tests;
 
 use Camelot\Common\Assert;
+use PHPUnit\Framework\TestCase;
 
 class AssertTest extends TestCase
 {
-    public function testIsArrayAccessible()
+    public function testIsArrayAccessible(): void
     {
         Assert::isArrayAccessible([1, 2, 3]);
         Assert::isArrayAccessible(new \ArrayObject([1, 2, 3]));
@@ -23,23 +26,21 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(2);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testIsArrayAccessibleFailsScalar()
+    public function testIsArrayAccessibleFailsScalar(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         Assert::isArrayAccessible(123);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testIsArrayAccessibleFailsObject()
+    public function testIsArrayAccessibleFailsObject(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         Assert::isArrayAccessible(new \stdClass());
     }
 
-    public function testIsInstanceOfAny()
+    public function testIsInstanceOfAny(): void
     {
         Assert::isInstanceOfAny(new \ArrayIterator(), [\Iterator::class, \ArrayAccess::class]); // both
         Assert::isInstanceOfAny(new \Exception(), [\Exception::class, \Countable::class]); // one of
@@ -47,23 +48,21 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(2);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testIsInstanceOfAnyFailsScalar()
+    public function testIsInstanceOfAnyFailsScalar(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         Assert::isInstanceOfAny(new \Exception(), [\ArrayAccess::class, \Countable::class]); // neither
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testIsInstanceOfAnyFailsObject()
+    public function testIsInstanceOfAnyFailsObject(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         Assert::isInstanceOfAny([], [\stdClass::class]); // scalar
     }
 
-    public function testIsIterable()
+    public function testIsIterable(): void
     {
         Assert::isIterable([1, 2, 3]);
         Assert::isIterable(new \ArrayObject([1, 2, 3]));
@@ -71,23 +70,21 @@ class AssertTest extends TestCase
         $this->addToAssertionCount(2);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testIsIterableFailsScalar()
+    public function testIsIterableFailsScalar(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         Assert::isIterable(123);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testIsIterableFailsObject()
+    public function testIsIterableFailsObject(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         Assert::isIterable(new \stdClass());
     }
 
-    public function testValueToString()
+    public function testValueToString(): void
     {
         $this->assertSame('"foo"', Assert::valueToString('foo'));
     }

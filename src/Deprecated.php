@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of a Camelot Project package.
  *
@@ -39,10 +41,10 @@ class Deprecated
      *                            that will be the suggestion
      * @param string|int $subject The method or class name or the index of the call stack to reference
      */
-    public static function method($since = null, $suggest = '', $subject = 0)
+    public static function method(?float $since = null, ?string $suggest = '', $subject = 0): void
     {
         if ($subject === null || \is_int($subject)) {
-            list($subject, $function, $class, $constructor) = static::getCaller($subject ?: 0);
+            [$subject, $function, $class, $constructor] = static::getCaller($subject ?: 0);
         } else {
             Assert::stringNotEmpty($subject, 'Expected a non-empty string. Got: %s');
             $function = $subject;
@@ -71,12 +73,9 @@ class Deprecated
     /**
      * Get info about caller at index.
      *
-     * @param int $index
-     * @param int $offset
-     *
      * @return array [string repr, function name, class name or false, isConstructor]
      */
-    protected static function getCaller($index, $offset = 1)
+    protected static function getCaller(int $index, int $offset = 1): array
     {
         Assert::greaterThanEq($index, 0);
 
@@ -111,7 +110,7 @@ class Deprecated
         $constructor = $function === '__construct';
 
         if ($function === '__call' || $function === '__callStatic') {
-            $frame = debug_backtrace(false, $index + 1)[$index]; // with args
+            $frame = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, $index + 1)[$index]; // with args
             $function = $frame['args'][0];
         }
 
@@ -130,7 +129,7 @@ class Deprecated
      * @param float|null $since   The version it was deprecated in
      * @param string     $suggest A class or suggestion of what to use instead
      */
-    public static function cls($class, $since = null, $suggest = null)
+    public static function cls(string $class, ?float $since = null, ?string $suggest = null): void
     {
         if ($suggest && preg_match('/\s/', $suggest) === 0) {
             $suggest = ltrim($suggest, '\\');
@@ -158,7 +157,7 @@ class Deprecated
      * @param float|null $since   The version it was deprecated in
      * @param string     $suggest A suggestion of what to do instead
      */
-    public static function warn($subject, $since = null, $suggest = '')
+    public static function warn(string $subject, ?float $since = null, ?string $suggest = ''): void
     {
         $message = $subject . ' is deprecated';
 
@@ -181,7 +180,7 @@ class Deprecated
      *
      * @param string $message The raw message
      */
-    public static function raw($message)
+    public static function raw(string $message): void
     {
         @trigger_error($message, E_USER_DEPRECATED);
     }
