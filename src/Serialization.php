@@ -47,7 +47,7 @@ class Serialization
      */
     public static function parse(string $value, array $options = [])
     {
-        $unserializeHandler = ini_set('unserialize_callback_func', __CLASS__ . '::handleUnserializeCallback');
+        $unserializeHandler = ini_set('unserialize_callback_func', self::class . '::handleUnserializeCallback');
         try {
             if (\PHP_VERSION_ID < 70000) {
                 return Thrower::call('unserialize', $value);
