@@ -63,13 +63,6 @@ final class Json
         }
 
         if ($json !== false) {
-            // Match PHP 7.1 functionality
-            // Escape line terminators with JSON_UNESCAPED_UNICODE unless JSON_UNESCAPED_LINE_TERMINATORS is given
-            if (\PHP_VERSION_ID < 70100 && $options & JSON_UNESCAPED_UNICODE && ($options & 2048) === 0) {
-                $json = str_replace("\xe2\x80\xa8", '\\u2028', $json);
-                $json = str_replace("\xe2\x80\xa9", '\\u2029', $json);
-            }
-
             return $json;
         }
 

@@ -49,15 +49,10 @@ class Serialization
     {
         $unserializeHandler = ini_set('unserialize_callback_func', self::class . '::handleUnserializeCallback');
         try {
-            if (\PHP_VERSION_ID < 70000) {
-                return Thrower::call('unserialize', $value);
-            }
-
             return Thrower::call('unserialize', $value, $options);
         } catch (ParseException $e) {
             throw $e;
-        } catch (\Error $e) {
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
         } finally {
             ini_set('unserialize_callback_func', $unserializeHandler);
         }
