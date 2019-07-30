@@ -53,7 +53,15 @@ final class Json
      */
     public static function dump($data, int $options = self::UNESCAPED, int $depth = 512): string
     {
-        $json = @json_encode($data, $options, $depth);
+        if (\PHP_VERSION_ID >= 70300) {
+            $options = $options | JSON_THROW_ON_ERROR;
+        }
+
+        try {
+            $json = @json_encode($data, $options, $depth);
+        } catch (\JsonException $e) {
+            throw new DumpException(sprintf('JSON dumping failed: %s', $e->getMessage()), $e);
+        }
 
         // If UTF-8 error, try to convert and try again before failing.
         if ($json === false && json_last_error() === JSON_ERROR_UTF8) {
@@ -84,9 +92,17 @@ final class Json
             return null;
         }
 
+        if (\PHP_VERSION_ID >= 70300) {
+            $options = $options | JSON_THROW_ON_ERROR;
+        }
+
         $json = (string) $json;
 
-        $data = @json_decode($json, true, $depth, $options);
+        try {
+            $data = @json_decode($json, true, $depth, $options);
+        } catch (\JsonException $e) {
+            throw new ParseException($e->getMessage(), $e->getLine(), $e->getFile(), $e->getCode(), $e);
+        }
 
         if ($data === null && ($json === '' || ($code = json_last_error()) !== JSON_ERROR_NONE)) {
             if (isset($code) && ($code === JSON_ERROR_UTF8 || $code === JSON_ERROR_DEPTH)) {
