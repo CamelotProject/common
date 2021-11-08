@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Camelot\Common;
 
+use Camelot\Thrower\Thrower;
+
 /**
  * Wrapper around ini_get()/ini_set().
  *

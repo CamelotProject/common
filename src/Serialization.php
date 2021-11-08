@@ -15,6 +15,7 @@ namespace Camelot\Common;
 
 use Camelot\Common\Exception\DumpException;
 use Camelot\Common\Exception\ParseException;
+use Camelot\Thrower\Thrower;
 
 /**
  * Wrapper around serialize()/unserialize().
