@@ -290,12 +290,8 @@ final class JsonTest extends TestCase
     public function testDumpFail(): void
     {
         $mocker = JsonMocker::instance();
-        $mocker->setEncoder(function () {
-            return false;
-        });
-        $mocker->setLastMessageGetter(function () {
-            return 'Unknown error';
-        });
+        $mocker->setEncoder(fn () => false);
+        $mocker->setLastMessageGetter(fn () => 'Unknown error');
 
         $this->expectException(DumpException::class);
         $this->expectExceptionMessage('JSON dumping failed: Unknown error');

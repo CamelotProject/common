@@ -175,7 +175,7 @@ final class Json
         }
         $data = preg_replace_callback(
             '/[\x80-\xFF]+/',
-            function ($m) { return utf8_encode($m[0]); },
+            fn ($m) => utf8_encode($m[0]),
             $data
         );
         $data = str_replace(
