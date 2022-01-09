@@ -25,9 +25,7 @@ class Ini
     /** @var array [string key => bool editable] */
     private static $keys;
 
-    /**
-     * Checks whether the given key exists.
-     */
+    /** Checks whether the given key exists. */
     public static function has(string $key): bool
     {
         if (static::$keys === null) {
@@ -37,9 +35,7 @@ class Ini
         return array_key_exists($key, static::$keys);
     }
 
-    /**
-     * Returns the string value of the given key or the given default if it is empty or does not exist.
-     */
+    /** Returns the string value of the given key or the given default if it is empty or does not exist. */
     public static function getStr(string $key, ?string $default = null): ?string
     {
         $value = ini_get($key);
@@ -62,9 +58,9 @@ class Ini
      *
      * If the key does not exist or the value is empty the given default is returned.
      *
-     * @param int|float|null $default
+     * @param null|float|int $default
      *
-     * @return int|float|null
+     * @return null|float|int
      */
     public static function getNumeric(string $key, $default = null)
     {
@@ -111,6 +107,7 @@ class Ini
 
         $result = false;
         $ex = null;
+
         try {
             $result = Thrower::call('ini_set', $key, $iniValue);
         } catch (\Exception $ex) {
@@ -119,33 +116,33 @@ class Ini
         if ($result === false || $ex !== null) {
             if (!static::has($key)) {
                 throw new \RuntimeException(
-                    "The ini option '$key' does not exist. New ini options cannot be added.",
+                    "The ini option '{$key}' does not exist. New ini options cannot be added.",
                     0,
                     $ex
                 );
             }
             if (!static::$keys[$key]) {
                 throw new \RuntimeException(
-                    "Unable to change ini option '$key', because it is not editable at runtime.",
+                    "Unable to change ini option '{$key}', because it is not editable at runtime.",
                     0,
                     $ex
                 );
             }
 
             $value = Assert::valueToString($value);
+
             throw new \RuntimeException(sprintf('Unable to change ini option "%s" to %s.', $key, $value), 0, $ex);
         }
 
         // HHVM sets values w/o error, but the change is not actually applied.
         if (ini_get($key) !== $iniValue) {
             $value = Assert::valueToString($value);
+
             throw new \RuntimeException(sprintf('Unable to change ini option "%s" to %s.', $key, $value), 0, $ex);
         }
     }
 
-    /**
-     * Process all ini options to get list of keys and determine which ones are editable.
-     */
+    /** Process all ini options to get list of keys and determine which ones are editable. */
     private static function readKeys(): void
     {
         static::$keys = [];
@@ -155,9 +152,7 @@ class Ini
         }
     }
 
-    /**
-     * @codeCoverageIgnore
-     */
+    /** @codeCoverageIgnore */
     private function __construct()
     {
     }

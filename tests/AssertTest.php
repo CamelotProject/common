@@ -16,7 +16,12 @@ namespace Camelot\Common\Tests;
 use Camelot\Common\Assert;
 use PHPUnit\Framework\TestCase;
 
-class AssertTest extends TestCase
+/**
+ * @covers \Camelot\Common\Assert
+ *
+ * @internal
+ */
+final class AssertTest extends TestCase
 {
     public function testIsArrayAccessible(): void
     {
@@ -86,6 +91,6 @@ class AssertTest extends TestCase
 
     public function testValueToString(): void
     {
-        $this->assertSame('"foo"', Assert::valueToString('foo'));
+        static::assertSame('"foo"', Assert::valueToString('foo'));
     }
 }

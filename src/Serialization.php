@@ -27,7 +27,6 @@ class Serialization
     /**
      * Dump (Serialize) value.
      *
-     *
      * @throws DumpException when serializing fails
      */
     public static function dump($value): string
@@ -49,6 +48,7 @@ class Serialization
     public static function parse(string $value, array $options = [])
     {
         $unserializeHandler = ini_set('unserialize_callback_func', self::class . '::handleUnserializeCallback');
+
         try {
             return Thrower::call('unserialize', $value, $options);
         } catch (ParseException $e) {
@@ -61,9 +61,7 @@ class Serialization
         throw new ParseException('Error parsing serialized value.', -1, null, 0, $e);
     }
 
-    /**
-     * @internal
-     */
+    /** @internal */
     public static function handleUnserializeCallback(string $class): void
     {
         throw new ParseException(sprintf('Error parsing serialized value. Could not find class: %s', $class));

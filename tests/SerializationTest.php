@@ -21,13 +21,15 @@ use PHPUnit\Framework\TestCase;
  * @covers \Camelot\Common\Serialization
  *
  * @author Gawain Lynch <gawain.lynch@gmail.com>
+ *
+ * @internal
  */
-class SerializationTest extends TestCase
+final class SerializationTest extends TestCase
 {
     public function testDump(): void
     {
         $result = Serialization::dump(new \stdClass());
-        $this->assertSame(serialize(new \stdClass()), $result);
+        static::assertSame(serialize(new \stdClass()), $result);
     }
 
     public function testDumpInvalid(): void
@@ -46,7 +48,7 @@ class SerializationTest extends TestCase
     public function testParseSimple(): void
     {
         $result = Serialization::parse(serialize(new \stdClass()));
-        $this->assertInstanceOf(\stdClass::class, $result);
+        static::assertInstanceOf(\stdClass::class, $result);
     }
 
     public function testParseInvalidData(): void
@@ -63,7 +65,7 @@ class SerializationTest extends TestCase
         $this->expectExceptionMessage('Error parsing serialized value. Could not find class: ThisClassShouldNotExistsDueToDropBears');
 
         if (\defined('HHVM_VERSION')) {
-            $this->markTestSkipped(
+            static::markTestSkipped(
                 'HHVM has not implemented "unserialize_callback_func", meaning ' .
                 '__PHP_Incomplete_Class could be returned at any level and we are not going to look for them.'
             );

@@ -16,7 +16,12 @@ namespace Camelot\Common\Tests;
 use Camelot\Common\Ini;
 use PHPUnit\Framework\TestCase;
 
-class IniTest extends TestCase
+/**
+ * @covers \Camelot\Common\Ini
+ *
+ * @internal
+ */
+final class IniTest extends TestCase
 {
     public const STR_KEY = 'user_agent';
     public const BOOL_KEY = 'assert.bail';
@@ -34,10 +39,10 @@ class IniTest extends TestCase
     protected function setUp(): void
     {
         $this->backup = [
-            static::STR_KEY     => ini_get(static::STR_KEY),
-            static::BOOL_KEY    => ini_get(static::BOOL_KEY),
+            static::STR_KEY => ini_get(static::STR_KEY),
+            static::BOOL_KEY => ini_get(static::BOOL_KEY),
             static::NUMERIC_KEY => ini_get(static::NUMERIC_KEY),
-            static::BYTES_KEY   => ini_get(static::BYTES_KEY),
+            static::BYTES_KEY => ini_get(static::BYTES_KEY),
         ];
     }
 
@@ -50,49 +55,49 @@ class IniTest extends TestCase
 
     public function testHas(): void
     {
-        $this->assertTrue(Ini::has(static::STR_KEY));
-        $this->assertFalse(Ini::has(static::NONEXISTENT_KEY));
+        static::assertTrue(Ini::has(static::STR_KEY));
+        static::assertFalse(Ini::has(static::NONEXISTENT_KEY));
     }
 
     public function testGetStr(): void
     {
         ini_set(static::STR_KEY, '');
-        $this->assertSame('default', Ini::getStr(static::STR_KEY, 'default'));
+        static::assertSame('default', Ini::getStr(static::STR_KEY, 'default'));
 
         ini_set(static::STR_KEY, 'foo');
-        $this->assertSame('foo', Ini::getStr(static::STR_KEY));
+        static::assertSame('foo', Ini::getStr(static::STR_KEY));
 
-        $this->assertNull(Ini::getStr(static::NONEXISTENT_KEY));
+        static::assertNull(Ini::getStr(static::NONEXISTENT_KEY));
     }
 
     public function testGetBool(): void
     {
         ini_set(static::BOOL_KEY, '0');
-        $this->assertFalse(Ini::getBool(static::BOOL_KEY));
+        static::assertFalse(Ini::getBool(static::BOOL_KEY));
 
         ini_set(static::BOOL_KEY, '');
-        $this->assertFalse(Ini::getBool(static::BOOL_KEY));
+        static::assertFalse(Ini::getBool(static::BOOL_KEY));
 
         ini_set(static::BOOL_KEY, '1');
-        $this->assertTrue(Ini::getBool(static::BOOL_KEY));
+        static::assertTrue(Ini::getBool(static::BOOL_KEY));
 
-        $this->assertFalse(Ini::getBool(static::NONEXISTENT_KEY));
+        static::assertFalse(Ini::getBool(static::NONEXISTENT_KEY));
     }
 
     public function testGetNumeric(): void
     {
         if (!\defined('HHVM_VERSION')) {
             ini_set(static::NUMERIC_KEY, '');
-            $this->assertSame(4.0, Ini::getNumeric(static::NUMERIC_KEY, 4.0));
+            static::assertSame(4.0, Ini::getNumeric(static::NUMERIC_KEY, 4.0));
         }
 
         ini_set(static::NUMERIC_KEY, '2');
-        $this->assertSame(2, Ini::getNumeric(static::NUMERIC_KEY));
+        static::assertSame(2, Ini::getNumeric(static::NUMERIC_KEY));
 
         ini_set(static::NUMERIC_KEY, '3.2');
-        $this->assertSame(3.2, Ini::getNumeric(static::NUMERIC_KEY));
+        static::assertSame(3.2, Ini::getNumeric(static::NUMERIC_KEY));
 
-        $this->assertNull(Ini::getNumeric(static::NONEXISTENT_KEY));
+        static::assertNull(Ini::getNumeric(static::NONEXISTENT_KEY));
     }
 
     public function provideBytes()
@@ -121,22 +126,22 @@ class IniTest extends TestCase
         if ($value !== null) {
             Ini::set($key, $value);
         }
-        $this->assertSame($expected, Ini::getBytes($key));
+        static::assertSame($expected, Ini::getBytes($key));
     }
 
     public function testSet(): void
     {
         Ini::set(static::STR_KEY, 'foo');
-        $this->assertSame('foo', ini_get(static::STR_KEY));
+        static::assertSame('foo', ini_get(static::STR_KEY));
     }
 
     public function testSetBoolean(): void
     {
         Ini::set(static::BOOL_KEY, false);
-        $this->assertSame('0', ini_get(static::BOOL_KEY));
+        static::assertSame('0', ini_get(static::BOOL_KEY));
 
         Ini::set(static::BOOL_KEY, true);
-        $this->assertSame('1', ini_get(static::BOOL_KEY));
+        static::assertSame('1', ini_get(static::BOOL_KEY));
     }
 
     public function testSetInvalidType(): void
@@ -150,7 +155,7 @@ class IniTest extends TestCase
     public function testSetInvalidValue(): void
     {
         if (\defined('HHVM_VERSION')) {
-            $this->markTestSkipped('HHVM does not disallow this.');
+            static::markTestSkipped('HHVM does not disallow this.');
         }
 
         $this->expectException(\RuntimeException::class);
@@ -159,9 +164,7 @@ class IniTest extends TestCase
         Ini::set(static::VALIDATED_KEY, -2);
     }
 
-    /**
-     * @doesNotPerformAssertions
-     */
+    /** @doesNotPerformAssertions */
     public function testSetInvalidValueSilentError(): void
     {
         // PHP allows setting floats on int keys, HHVM does not.
@@ -178,7 +181,7 @@ class IniTest extends TestCase
     public function testSetInvalidValueErrorTriggered(): void
     {
         if (\defined('HHVM_VERSION')) {
-            $this->markTestSkipped('HHVM does not trigger error.');
+            static::markTestSkipped('HHVM does not trigger error.');
         }
 
         try {
@@ -186,12 +189,12 @@ class IniTest extends TestCase
         } catch (\Exception $e) {
         }
         if (!isset($e)) {
-            $this->fail('Exception should be thrown');
+            static::fail('Exception should be thrown');
 
             return;
         }
 
-        $this->assertInstanceOf(
+        static::assertInstanceOf(
             \ErrorException::class,
             $e->getPrevious(),
             'set() should have caught a triggered error and thrown it as an ErrorException.'

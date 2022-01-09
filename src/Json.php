@@ -80,7 +80,7 @@ final class Json
     /**
      * Parses JSON into a PHP array.
      *
-     * @param string|null $json    The JSON string or object implementing __toString()
+     * @param null|string $json    The JSON string or object implementing __toString()
      * @param int         $options Bitmask of JSON decode options
      * @param int         $depth   Recursion depth
      *
@@ -119,9 +119,7 @@ final class Json
         return $data;
     }
 
-    /**
-     * Return whether the given string is JSON.
-     */
+    /** Return whether the given string is JSON. */
     public static function test($json): bool
     {
         if (!\is_string($json) && !\is_callable([$json, '__toString'])) {

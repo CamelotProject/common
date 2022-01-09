@@ -21,16 +21,21 @@ use Camelot\Common\Tests\Fixtures\TestJsonable;
 use Camelot\Common\Tests\Fixtures\TestStringable;
 use PHPUnit\Framework\TestCase;
 
-class JsonTest extends TestCase
+/**
+ * @covers \Camelot\Common\Json
+ *
+ * @internal
+ */
+final class JsonTest extends TestCase
 {
     public function testParseNull(): void
     {
-        $this->assertNull(Json::parse(null));
+        static::assertNull(Json::parse(null));
     }
 
     public function testParseValid(): void
     {
-        $this->assertEquals(['foo' => 'bar'], Json::parse('{"foo": "bar"}'));
+        static::assertEquals(['foo' => 'bar'], Json::parse('{"foo": "bar"}'));
     }
 
     public function testParseErrorEmptyString(): void
@@ -131,20 +136,20 @@ class JsonTest extends TestCase
     {
         try {
             $result = Json::parse($json);
-            $this->fail(sprintf(
+            static::fail(sprintf(
                 "Parsing should have failed but didn't.\nExpected:\n\"%s\"\nFor:\n\"%s\"\nGot:\n\"%s\"",
                 $text,
                 $json,
                 var_export($result, true)
             ));
         } catch (ParseException $e) {
-            $this->assertSame($line, $e->getParsedLine());
-            $this->assertSame($code, $e->getCode());
+            static::assertSame($line, $e->getParsedLine());
+            static::assertSame($code, $e->getCode());
             $actualMsg = $e->getMessage();
-            $this->assertStringStartsWith('JSON parsing failed: ', $actualMsg);
+            static::assertStringStartsWith('JSON parsing failed: ', $actualMsg);
             $actualMsg = substr($actualMsg, 21);
             if ($text) {
-                $this->assertStringStartsWith($text, $actualMsg);
+                static::assertStringStartsWith($text, $actualMsg);
             }
         }
     }
@@ -164,10 +169,10 @@ class JsonTest extends TestCase
         $ex->setParsedLine(5);
         $ex->setSnippet('foo bar');
 
-        $this->assertEquals('Whoops.', $ex->getRawMessage());
-        $this->assertEquals(5, $ex->getParsedLine());
-        $this->assertEquals('foo bar', $ex->getSnippet());
-        $this->assertEquals('Whoops at line 5 (near "foo bar").', $ex->getMessage());
+        static::assertEquals('Whoops.', $ex->getRawMessage());
+        static::assertEquals(5, $ex->getParsedLine());
+        static::assertEquals('foo bar', $ex->getSnippet());
+        static::assertEquals('Whoops at line 5 (near "foo bar").', $ex->getMessage());
     }
 
     public function testDumpSimpleJsonString(): void
@@ -200,7 +205,7 @@ class JsonTest extends TestCase
     public function testDumpUnicode(): void
     {
         if (!\function_exists('mb_convert_encoding')) {
-            $this->markTestSkipped('Test requires the mbstring extension');
+            static::markTestSkipped('Test requires the mbstring extension');
         }
 
         $data = ['Žluťoučký " kůň' => 'úpěl ďábelské ódy za €'];
@@ -213,7 +218,7 @@ class JsonTest extends TestCase
     public function testDumpOnlyUnicode(): void
     {
         if (!\function_exists('mb_convert_encoding')) {
-            $this->markTestSkipped('Test requires the mbstring extension');
+            static::markTestSkipped('Test requires the mbstring extension');
         }
 
         $data = '\\/ƌ';
@@ -267,19 +272,19 @@ class JsonTest extends TestCase
             Json::dump([["\xA4"]], 448, 1);
         } catch (DumpException $e) {
             if ($e->getCode() !== JSON_ERROR_DEPTH) {
-                $this->fail('Should have thrown exception with code for max depth');
+                static::fail('Should have thrown exception with code for max depth');
             }
-            $this->assertSame('JSON dumping failed: Maximum stack depth exceeded', $e->getMessage());
+            static::assertSame('JSON dumping failed: Maximum stack depth exceeded', $e->getMessage());
 
             return;
         }
 
-        $this->fail('Should have thrown ' . DumpException::class);
+        static::fail('Should have thrown ' . DumpException::class);
     }
 
     private function assertJsonFormat($json, $data, int $options = Json::HUMAN): void
     {
-        $this->assertEquals($json, Json::dump($data, $options));
+        static::assertEquals($json, Json::dump($data, $options));
     }
 
     public function testDumpFail(): void
@@ -304,13 +309,13 @@ class JsonTest extends TestCase
 
     public function testTest(): void
     {
-        $this->assertFalse(Json::test(null));
-        $this->assertFalse(Json::test(123));
-        $this->assertFalse(Json::test(''));
-        $this->assertFalse(Json::test(new TestStringable('')));
-        $this->assertTrue(Json::test('{}'));
-        $this->assertTrue(Json::test(new TestStringable('{}')));
+        static::assertFalse(Json::test(null));
+        static::assertFalse(Json::test(123));
+        static::assertFalse(Json::test(''));
+        static::assertFalse(Json::test(new TestStringable('')));
+        static::assertTrue(Json::test('{}'));
+        static::assertTrue(Json::test(new TestStringable('{}')));
 
-        $this->assertFalse(Json::test('{"foo": "bar",}'), 'Invalid JSON should return false');
+        static::assertFalse(Json::test('{"foo": "bar",}'), 'Invalid JSON should return false');
     }
 }

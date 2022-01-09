@@ -18,7 +18,7 @@ use function call_user_func;
 use function call_user_func_array;
 use function func_get_args;
 
-// @codingStandardsIgnoreFile
+/** @codingStandardsIgnoreFile */
 
 /**
  * Proxies native JSON methods through this singleton so they can be easily modified.
@@ -115,8 +115,7 @@ PHP;
         $this->lastMsgGetter = $callable ?: 'json_last_error_msg';
     }
 
-    // @codingStandardsIgnoreStart
-
+    /** @codingStandardsIgnoreStart */
     public function json_decode(string $value, bool $assoc = false, int $options = 0, int $depth = 512)
     {
         return call_user_func_array($this->decoder, func_get_args());

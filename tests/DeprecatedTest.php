@@ -18,9 +18,13 @@ use Camelot\Common\Tests\Fixtures\TestDeprecatedClass;
 use PHPUnit\Framework\TestCase;
 
 /**
+ * @covers \Camelot\Common\Deprecated
+ *
  * @author Carson Full <carsonfull@gmail.com>
+ *
+ * @internal
  */
-class DeprecatedTest extends TestCase
+final class DeprecatedTest extends TestCase
 {
     protected $deprecations = [];
 
@@ -176,8 +180,8 @@ class DeprecatedTest extends TestCase
 
     private function assertDeprecation($msg): void
     {
-        $this->assertNotEmpty($this->deprecations, 'No deprecations triggered.');
-        $this->assertEquals($msg, $this->deprecations[0]);
+        static::assertNotEmpty($this->deprecations, 'No deprecations triggered.');
+        static::assertEquals($msg, $this->deprecations[0]);
         $this->deprecations = [];
     }
 }

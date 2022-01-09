@@ -20,7 +20,7 @@ class ParseException extends \RuntimeException
 {
     /** @var int */
     private $parsedLine;
-    /** @var string|null */
+    /** @var null|string */
     private $snippet;
     /** @var string */
     private $rawMessage;
@@ -36,9 +36,7 @@ class ParseException extends \RuntimeException
         parent::__construct($this->message, $code, $previous);
     }
 
-    /**
-     * Casts JsonLint ParseException to ours.
-     */
+    /** Casts JsonLint ParseException to ours. */
     public static function castFromJson(JsonParseException $exception): self
     {
         $details = $exception->getDetails();
@@ -68,9 +66,7 @@ class ParseException extends \RuntimeException
         return new static($message, $line, $snippet, JSON_ERROR_SYNTAX);
     }
 
-    /**
-     * Gets the message without line number and snippet.
-     */
+    /** Gets the message without line number and snippet. */
     public function getRawMessage(): string
     {
         return $this->rawMessage;
@@ -88,17 +84,13 @@ class ParseException extends \RuntimeException
         $this->updateRepr();
     }
 
-    /**
-     * Gets the line where the error occurred.
-     */
+    /** Gets the line where the error occurred. */
     public function getParsedLine(): int
     {
         return $this->parsedLine;
     }
 
-    /**
-     * Sets the line where the error occurred.
-     */
+    /** Sets the line where the error occurred. */
     public function setParsedLine(int $parsedLine): void
     {
         $this->parsedLine = $parsedLine;
@@ -106,17 +98,13 @@ class ParseException extends \RuntimeException
         $this->updateRepr();
     }
 
-    /**
-     * Gets the snippet of code near the error.
-     */
+    /** Gets the snippet of code near the error. */
     public function getSnippet(): string
     {
         return $this->snippet;
     }
 
-    /**
-     * Sets the snippet of code near the error.
-     */
+    /** Sets the snippet of code near the error. */
     public function setSnippet(string $snippet): void
     {
         $this->snippet = $snippet;
@@ -124,9 +112,7 @@ class ParseException extends \RuntimeException
         $this->updateRepr();
     }
 
-    /**
-     * Sets the exception message by joining the raw message, parsed line, and snippet.
-     */
+    /** Sets the exception message by joining the raw message, parsed line, and snippet. */
     private function updateRepr(): void
     {
         $this->message = $this->rawMessage;
