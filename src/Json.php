@@ -123,19 +123,12 @@ final class Json
     /** Return whether the given string is JSON. */
     public static function test(mixed $json): bool
     {
-        if (!\is_string($json) && !\is_callable([$json, '__toString'])) {
-            return false;
-        }
-
-        $json = (string) $json;
-
-        // valid for PHP 5.x, invalid for PHP 7.x
-        if ($json === '') {
+        if (!\is_string($json) && !$json instanceof Stringable) {
             return false;
         }
 
         // Don't call our parse(), because we don't need the extra syntax checking.
-        @json_decode($json);
+        @json_decode((string) $json);
 
         return json_last_error() === JSON_ERROR_NONE;
     }
