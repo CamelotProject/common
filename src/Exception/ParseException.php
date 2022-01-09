@@ -57,7 +57,7 @@ class ParseException extends \RuntimeException
             $trailingComma = true;
         }
 
-        if (strpos($message, 'Expected') === 0 && $trailingComma) {
+        if (str_starts_with($message, 'Expected') && $trailingComma) {
             $message = 'It appears you have an extra trailing comma';
         }
 
