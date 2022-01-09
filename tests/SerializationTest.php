@@ -40,7 +40,7 @@ final class SerializationTest extends TestCase
             $message = '/Error serializing value\. Attempted to serialize unserializable builtin class Closure\$Camelot\\\\Common\\\\Tests\\\\SerializationTest::testDumpInvalid;\d+/';
         }
         $this->expectException(DumpException::class);
-        $this->expectExceptionMessageRegExp($message);
+        $this->expectExceptionMessageMatches($message);
 
         Serialization::dump(function (): void {});
     }
