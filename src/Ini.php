@@ -22,8 +22,8 @@ use Camelot\Thrower\Thrower;
  */
 class Ini
 {
-    /** @var array [string key => bool editable] */
-    private static $keys;
+    /** @var ?array [string key => bool editable] */
+    private static ?array $keys = null;
 
     /** Checks whether the given key exists. */
     public static function has(string $key): bool
@@ -57,12 +57,8 @@ class Ini
      * Returns the value of the given key filtered to an int or float.
      *
      * If the key does not exist or the value is empty the given default is returned.
-     *
-     * @param null|float|int $default
-     *
-     * @return null|float|int
      */
-    public static function getNumeric(string $key, $default = null)
+    public static function getNumeric(string $key, float|int $default = null): float|int|null
     {
         $value = ini_get($key);
 
@@ -87,7 +83,7 @@ class Ini
         }
 
         $unit = preg_replace('/[^bkmgtpezy]/i', '', $value);
-        $size = preg_replace('/[^0-9\.]/', '', $value);
+        $size = preg_replace('/[^0-9.]/', '', $value);
 
         return ((int) $size) * ($unit ? 1024 ** stripos('bkmgtpezy', $unit[0]) : 1);
     }
@@ -95,14 +91,11 @@ class Ini
     /**
      * Set a new value for the given key.
      *
-     *
      * @throws \InvalidArgumentException when the value is not scalar or null
      * @throws \RuntimeException         when the key does not exist, it is not editable, or some unknown reason
      */
-    public static function set(string $key, $value): void
+    public static function set(string $key, int|float|string|bool $value): void
     {
-        Assert::nullOrScalar($value, 'ini values must be scalar or null. Got: %s');
-
         $iniValue = $value === false ? '0' : (string) $value;
 
         $result = false;

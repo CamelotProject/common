@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class DeprecatedTest extends TestCase
 {
-    protected $deprecations = [];
+    protected array $deprecations = [];
 
     public function testMethod(): void
     {
@@ -103,14 +103,6 @@ final class DeprecatedTest extends TestCase
         $this->expectExceptionMessage('9000 is greater than the current call stack');
 
         Deprecated::method(null, null, 9000);
-    }
-
-    public function testMethodNotIntOrString(): void
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Expected a non-empty string. Got: boolean');
-
-        Deprecated::method(null, null, false);
     }
 
     public function testMethodEmptyString(): void

@@ -17,6 +17,7 @@ use Camelot\Common\Exception\DumpException;
 use Camelot\Common\Exception\ParseException;
 use Seld\JsonLint\JsonParser;
 use Seld\JsonLint\ParsingException;
+use Stringable;
 
 /**
  * JSON parsing and dumping with error handling.
@@ -51,7 +52,7 @@ final class Json
      *
      * @throws DumpException If dumping fails
      */
-    public static function dump($data, int $options = self::UNESCAPED, int $depth = 512): string
+    public static function dump(mixed $data, int $options = self::UNESCAPED, int $depth = 512): string
     {
         if (\PHP_VERSION_ID >= 70300) {
             $options = $options | JSON_THROW_ON_ERROR;
@@ -80,13 +81,13 @@ final class Json
     /**
      * Parses JSON into a PHP array.
      *
-     * @param null|string $json    The JSON string or object implementing __toString()
-     * @param int         $options Bitmask of JSON decode options
-     * @param int         $depth   Recursion depth
+     * @param null|string|Stringable $json    The JSON string or Stringable object
+     * @param int                    $options Bitmask of JSON decode options
+     * @param int                    $depth   Recursion depth
      *
      * @throws ParseException If the JSON is not valid
      */
-    public static function parse($json, int $options = 0, int $depth = 512): ?array
+    public static function parse(null|string|Stringable $json, int $options = 0, int $depth = 512): ?array
     {
         if ($json === null) {
             return null;
@@ -120,7 +121,7 @@ final class Json
     }
 
     /** Return whether the given string is JSON. */
-    public static function test($json): bool
+    public static function test(mixed $json): bool
     {
         if (!\is_string($json) && !\is_callable([$json, '__toString'])) {
             return false;
@@ -156,7 +157,7 @@ final class Json
      *
      * @see https://github.com/Seldaek/monolog/pull/683
      */
-    private static function detectAndCleanUtf8(&$data): void
+    private static function detectAndCleanUtf8(mixed &$data): void
     {
         if ($data instanceof \JsonSerializable) {
             $data = $data->jsonSerialize();

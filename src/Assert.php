@@ -65,7 +65,7 @@ class Assert extends \Webmozart\Assert\Assert
      * This returns quoted string values instead of `string`.
      * This returns `false` or `true` instead of `boolean`.
      */
-    public static function valueToString($value): string
+    public static function valueToString(mixed $value): string
     {
         return parent::valueToString($value);
     }

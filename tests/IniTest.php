@@ -34,7 +34,7 @@ final class IniTest extends TestCase
     public const NONEXISTENT_KEY = 'herp.derp';
     public const SILENT_ERROR_KEY = 'session.gc_maxlifetime';
 
-    private $backup;
+    private array $backup;
 
     protected function setUp(): void
     {
@@ -100,7 +100,7 @@ final class IniTest extends TestCase
         static::assertNull(Ini::getNumeric(static::NONEXISTENT_KEY));
     }
 
-    public function provideBytes()
+    public function provideBytes(): array
     {
         return [
             ['500000', 500000],
@@ -118,10 +118,8 @@ final class IniTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provideBytes
-     */
-    public function testGetBytes(?string $value, $expected, string $key = self::BYTES_KEY): void
+    /** @dataProvider provideBytes */
+    public function testGetBytes(?string $value, mixed $expected, string $key = self::BYTES_KEY): void
     {
         if ($value !== null) {
             Ini::set($key, $value);

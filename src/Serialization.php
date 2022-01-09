@@ -29,7 +29,7 @@ class Serialization
      *
      * @throws DumpException when serializing fails
      */
-    public static function dump($value): string
+    public static function dump(mixed $value): string
     {
         try {
             return serialize($value);
@@ -45,7 +45,7 @@ class Serialization
      *
      * @throws ParseException when unserializing fails
      */
-    public static function parse(string $value, array $options = [])
+    public static function parse(string $value, array $options = []): mixed
     {
         $unserializeHandler = ini_set('unserialize_callback_func', self::class . '::handleUnserializeCallback');
 

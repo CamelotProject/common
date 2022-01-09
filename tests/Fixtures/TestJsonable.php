@@ -15,7 +15,7 @@ namespace Camelot\Common\Tests\Fixtures;
 
 class TestJsonable implements \JsonSerializable
 {
-    private $data;
+    private array $data;
 
     public function __construct(array $data)
     {

@@ -18,12 +18,9 @@ use Throwable;
 
 class ParseException extends \RuntimeException
 {
-    /** @var int */
-    private $parsedLine;
-    /** @var null|string */
-    private $snippet;
-    /** @var string */
-    private $rawMessage;
+    private int $parsedLine;
+    private ?string $snippet;
+    private string $rawMessage;
 
     public function __construct(string $message, int $parsedLine = -1, ?string $snippet = null, int $code = 0, Throwable $previous = null)
     {

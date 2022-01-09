@@ -13,11 +13,13 @@ declare(strict_types=1);
 
 namespace Camelot\Common\Tests\Fixtures;
 
+use Stringable;
+
 class TestStringable
 {
-    private $string;
+    private string|Stringable $string;
 
-    public function __construct($string)
+    public function __construct(string|Stringable $string)
     {
         $this->string = $string;
     }

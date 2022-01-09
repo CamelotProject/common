@@ -41,7 +41,7 @@ class Deprecated
      *                            that will be the suggestion
      * @param int|string $subject The method or class name or the index of the call stack to reference
      */
-    public static function method(?float $since = null, ?string $suggest = '', $subject = 0): void
+    public static function method(?float $since = null, ?string $suggest = '', int|string $subject = 0): void
     {
         if ($subject === null || \is_int($subject)) {
             [$subject, $function, $class, $constructor] = static::getCaller($subject ?: 0);
@@ -164,7 +164,7 @@ class Deprecated
 
         if ($since !== null) {
             $since = (string) $since;
-            $message .= sprintf(' since %.1f and will be removed in %s.0', $since, $since[0] + 1);
+            $message .= sprintf(' since %.1f and will be removed in %s.0', $since, (int) $since[0] + 1);
         }
 
         $message .= '.';
