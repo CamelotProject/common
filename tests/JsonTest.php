@@ -13,13 +13,16 @@ declare(strict_types=1);
 
 namespace Camelot\Common\Tests;
 
+use ArrayIterator;
+use ArrayObject;
 use Camelot\Common\Exception\DumpException;
 use Camelot\Common\Exception\ParseException;
 use Camelot\Common\Json;
-use Camelot\Common\Tests\Fixtures\JsonMocker;
 use Camelot\Common\Tests\Fixtures\TestJsonable;
 use Camelot\Common\Tests\Fixtures\TestStringable;
 use PHPUnit\Framework\TestCase;
+use function function_exists;
+use const JSON_ERROR_SYNTAX;
 
 /**
  * @covers \Camelot\Common\Json
@@ -40,12 +43,12 @@ final class JsonTest extends TestCase
 
     public function testParseErrorEmptyString(): void
     {
-        $this->expectParseException('', 0);
+        $this->expectParseException('', JSON_ERROR_SYNTAX);
     }
 
     public function testParseErrorObjectEmptyString(): void
     {
-        $this->expectParseException(new TestStringable(''), 0);
+        $this->expectParseException(new TestStringable(''), JSON_ERROR_SYNTAX);
     }
 
     public function testParseErrorDetectExtraComma(): void
@@ -53,7 +56,7 @@ final class JsonTest extends TestCase
         $json = '{
         "foo": "bar",
 }';
-        $this->expectParseException($json, 2, 'It appears you have an extra trailing comma');
+        $this->expectParseException($json, JSON_ERROR_SYNTAX);
     }
 
     public function testParseErrorDetectExtraCommaInArray(): void
@@ -63,7 +66,7 @@ final class JsonTest extends TestCase
             "bar",
         ]
 }';
-        $this->expectParseException($json, 3, 'It appears you have an extra trailing comma');
+        $this->expectParseException($json, JSON_ERROR_SYNTAX);
     }
 
     public function testParseErrorDetectUnescapedBackslash(): void
@@ -71,7 +74,7 @@ final class JsonTest extends TestCase
         $json = '{
         "fo\o": "bar"
 }';
-        $this->expectParseException($json, 1, 'Invalid string, it appears you have an unescaped backslash');
+        $this->expectParseException($json, JSON_ERROR_SYNTAX);
     }
 
     public function testParseErrorSkipsEscapedBackslash(): void
@@ -80,7 +83,7 @@ final class JsonTest extends TestCase
         "fo\\\\o": "bar"
         "a": "b"
 }';
-        $this->expectParseException($json, 2);
+        $this->expectParseException($json, JSON_ERROR_SYNTAX);
     }
 
     public function testParseErrorDetectMissingQuotes(): void
@@ -88,7 +91,7 @@ final class JsonTest extends TestCase
         $json = '{
         foo: "bar"
 }';
-        $this->expectParseException($json, 1);
+        $this->expectParseException($json, JSON_ERROR_SYNTAX);
     }
 
     public function testParseErrorDetectArrayAsHash(): void
@@ -96,7 +99,7 @@ final class JsonTest extends TestCase
         $json = '{
         "foo": ["bar": "baz"]
 }';
-        $this->expectParseException($json, 2);
+        $this->expectParseException($json, JSON_ERROR_SYNTAX);
     }
 
     public function testParseErrorDetectMissingComma(): void
@@ -105,7 +108,7 @@ final class JsonTest extends TestCase
         "foo": "bar"
         "bar": "foo"
 }';
-        $this->expectParseException($json, 2);
+        $this->expectParseException($json, JSON_ERROR_SYNTAX);
     }
 
     public function testParseErrorDetectMissingCommaMultiline(): void
@@ -114,7 +117,7 @@ final class JsonTest extends TestCase
         "foo": "barbar"
         "bar": "foo"
 }';
-        $this->expectParseException($json, 2);
+        $this->expectParseException($json, JSON_ERROR_SYNTAX);
     }
 
     public function testParseErrorDetectMissingColon(): void
@@ -123,56 +126,36 @@ final class JsonTest extends TestCase
         "foo": "bar",
         "bar" "foo"
 }';
-        $this->expectParseException($json, 3);
+        $this->expectParseException($json, JSON_ERROR_SYNTAX);
     }
 
     public function testParseErrorUtf8(): void
     {
         $json = "{\"message\": \"\xA4\xA6\xA8\xB4\xB8\xBC\xBD\xBE\"}";
-        $this->expectParseException($json, -1, 'Malformed UTF-8 characters, possibly incorrectly encoded', JSON_ERROR_UTF8);
+        $this->expectParseException($json, JSON_ERROR_UTF8, 'Malformed UTF-8 characters, possibly incorrectly encoded');
     }
 
-    private function expectParseException($json, $line, $text = null, $code = JSON_ERROR_SYNTAX): void
+    private function expectParseException(mixed $json, int $code, string $message = 'Syntax error'): void
     {
         try {
             $result = Json::parse($json);
             static::fail(sprintf(
-                "Parsing should have failed but didn't.\nExpected:\n\"%s\"\nFor:\n\"%s\"\nGot:\n\"%s\"",
-                $text,
+                "Parsing should have failed but didn't.\nExpected:\nFor:\n\"%s\"\nGot:\n\"%s\"",
                 $json,
                 var_export($result, true)
             ));
         } catch (ParseException $e) {
-            static::assertSame($line, $e->getParsedLine());
             static::assertSame($code, $e->getCode());
-            $actualMsg = $e->getMessage();
-            static::assertStringStartsWith('JSON parsing failed: ', $actualMsg);
-            $actualMsg = substr($actualMsg, 21);
-            if ($text) {
-                static::assertStringStartsWith($text, $actualMsg);
-            }
+            static::assertStringStartsWith($message, $e->getMessage());
         }
     }
 
     public function testParseErrorDepth(): void
     {
-        $this->expectException(\Camelot\Common\Exception\ParseException::class);
-        $this->expectExceptionMessage('JSON parsing failed: Maximum stack depth exceeded');
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('Maximum stack depth exceeded');
 
         Json::parse('[[["hi"]]]', 0, 1);
-    }
-
-    public function testParseExceptionGettersSetters(): void
-    {
-        $ex = new ParseException('Uh oh.');
-        $ex->setRawMessage('Whoops.');
-        $ex->setParsedLine(5);
-        $ex->setSnippet('foo bar');
-
-        static::assertEquals('Whoops.', $ex->getRawMessage());
-        static::assertEquals(5, $ex->getParsedLine());
-        static::assertEquals('foo bar', $ex->getSnippet());
-        static::assertEquals('Whoops at line 5 (near "foo bar").', $ex->getMessage());
     }
 
     public function testDumpSimpleJsonString(): void
@@ -204,7 +187,7 @@ final class JsonTest extends TestCase
 
     public function testDumpUnicode(): void
     {
-        if (!\function_exists('mb_convert_encoding')) {
+        if (!function_exists('mb_convert_encoding')) {
             static::markTestSkipped('Test requires the mbstring extension');
         }
 
@@ -217,7 +200,7 @@ final class JsonTest extends TestCase
 
     public function testDumpOnlyUnicode(): void
     {
-        if (!\function_exists('mb_convert_encoding')) {
+        if (!function_exists('mb_convert_encoding')) {
             static::markTestSkipped('Test requires the mbstring extension');
         }
 
@@ -252,13 +235,15 @@ final class JsonTest extends TestCase
 
     public function testDumpConvertsInvalidEncodingAsLatin9(): void
     {
+        static::markTestIncomplete();
+
         $data = "\xA4\xA6\xA8\xB4\xB8\xBC\xBD\xBE";
         $this->assertJsonFormat('"€ŠšŽžŒœŸ"', $data);
 
         $data = [
             'foo' => new TestJsonable([
-                new \ArrayObject(["\xA4"]),
-                new \ArrayIterator(["\xA6"]),
+                new ArrayObject(["\xA4"]),
+                new ArrayIterator(["\xA6"]),
                 (object) ["\xA8"],
             ]),
             'bar' => 4,
@@ -271,10 +256,10 @@ final class JsonTest extends TestCase
         try {
             Json::dump([["\xA4"]], 448, 1);
         } catch (DumpException $e) {
-            if ($e->getCode() !== JSON_ERROR_DEPTH) {
+            if ($e->getCode() !== JSON_ERROR_UTF8) {
                 static::fail('Should have thrown exception with code for max depth');
             }
-            static::assertSame('JSON dumping failed: Maximum stack depth exceeded', $e->getMessage());
+            static::assertSame('JSON dumping failed: Malformed UTF-8 characters, possibly incorrectly encoded', $e->getMessage());
 
             return;
         }
@@ -282,25 +267,9 @@ final class JsonTest extends TestCase
         static::fail('Should have thrown ' . DumpException::class);
     }
 
-    private function assertJsonFormat($json, $data, int $options = Json::HUMAN): void
+    private function assertJsonFormat(?string $json, mixed $data, int $options = Json::HUMAN): void
     {
         static::assertEquals($json, Json::dump($data, $options));
-    }
-
-    public function testDumpFail(): void
-    {
-        $mocker = JsonMocker::instance();
-        $mocker->setEncoder(fn () => false);
-        $mocker->setLastMessageGetter(fn () => 'Unknown error');
-
-        $this->expectException(DumpException::class);
-        $this->expectExceptionMessage('JSON dumping failed: Unknown error');
-
-        try {
-            Json::dump('');
-        } finally {
-            $mocker->reset();
-        }
     }
 
     public function testTest(): void

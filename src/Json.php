@@ -18,6 +18,7 @@ use Camelot\Common\Exception\ParseException;
 use Seld\JsonLint\JsonParser;
 use Seld\JsonLint\ParsingException;
 use Stringable;
+use function json_last_error_msg;
 
 /**
  * JSON parsing and dumping with error handling.
@@ -54,14 +55,12 @@ final class Json
      */
     public static function dump(mixed $data, int $options = self::UNESCAPED, int $depth = 512): string
     {
-        if (\PHP_VERSION_ID >= 70300) {
-            $options = $options | JSON_THROW_ON_ERROR;
-        }
+        $options = $options | JSON_THROW_ON_ERROR;
 
         try {
-            $json = @json_encode($data, $options, $depth);
+            $json = json_encode($data, $options, $depth);
         } catch (\JsonException $e) {
-            throw new DumpException(sprintf('JSON dumping failed: %s', $e->getMessage()), $e);
+            throw new DumpException(sprintf('JSON dumping failed: %s', $e->getMessage()), $e->getCode(), $e);
         }
 
         // If UTF-8 error, try to convert and try again before failing.
@@ -93,21 +92,17 @@ final class Json
             return null;
         }
 
-        if (\PHP_VERSION_ID >= 70300) {
-            $options = $options | JSON_THROW_ON_ERROR;
-        }
-
-        $json = (string) $json;
+        $options = $options | JSON_THROW_ON_ERROR;
 
         try {
-            $data = @json_decode($json, true, $depth, $options);
+            $data = json_decode((string) $json, true, $depth, $options);
         } catch (\JsonException $e) {
-            throw new ParseException($e->getMessage(), $e->getLine(), $e->getFile(), $e->getCode(), $e);
+            throw new ParseException($e->getMessage(), $e->getCode(), $e);
         }
 
         if ($data === null && ($json === '' || ($code = json_last_error()) !== JSON_ERROR_NONE)) {
             if (isset($code) && ($code === JSON_ERROR_UTF8 || $code === JSON_ERROR_DEPTH)) {
-                throw new ParseException(sprintf('JSON parsing failed: %s', json_last_error_msg()), -1, null, $code);
+                throw new ParseException(sprintf('JSON parsing failed: %s', json_last_error_msg()), $code);
             }
 
             try {
